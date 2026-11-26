@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Genevieve\'s Apothecary</string>
+    <string name="title_activity_main">Genevieve\'s Apothecary</string>
+    <string name="package_name">com.slyhawk.genevievesapothecary</string>
+    <string name="custom_url_scheme">com.slyhawk.genevievesapothecary</string>
+</resources>

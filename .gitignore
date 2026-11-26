@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.DS_Store
+android/.gradle/
+android/build/
+android/app/build/
+android/app/src/main/assets/public/
+android/capacitor-cordova-android-plugins/build/
+ios/App/build/
+ios/App/DerivedData/
+ios/App/App/public/
+ios/App/*.ipa
+ios/App/Payload/

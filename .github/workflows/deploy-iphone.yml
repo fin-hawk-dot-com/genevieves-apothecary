@@ -1,0 +1,128 @@
+name: iPhone PWA (GitHub Pages) & Native iOS IPA / TestFlight
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      upload_testflight:
+        description: "Sign & upload to Apple TestFlight (requires Apple secrets)"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-ios-ipa:
+    name: Build Native iOS App (.ipa) on macOS Xcode
+    runs-on: macos-15
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install Dependencies, Build & Sync Capacitor iOS (SPM)
+        run: |
+          npm ci
+          npm run build
+          npx cap sync ios
+
+      - name: Build Unsigned Sideloadable .ipa (AltStore / Sideloadly)
+        if: ${{ !inputs.upload_testflight && env.HAS_APPLE_CERTS != 'true' }}
+        env:
+          HAS_APPLE_CERTS: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 != '' && 'true' || 'false' }}
+        working-directory: ios/App
+        run: |
+          xcodebuild clean build \
+            -project App.xcodeproj \
+            -scheme App \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+          mkdir -p Payload
+          cp -R build/Build/Products/Release-iphoneos/App.app Payload/
+          zip -qry GenevievesApothecary-Unsigned.ipa Payload
+
+      - name: Upload Native iOS .ipa Artifact
+        if: ${{ hashFiles('ios/App/GenevievesApothecary-Unsigned.ipa') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: GenevievesApothecary-iOS-IPA
+          path: ios/App/GenevievesApothecary-Unsigned.ipa
+          retention-days: 30
+
+      - name: Sign, Archive & Upload to Apple TestFlight
+        if: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 != '' }}
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD || 'temp-ci-keychain-pass' }}
+          APPSTORE_ISSUER_ID: ${{ secrets.APPSTORE_ISSUER_ID }}
+          APPSTORE_KEY_ID: ${{ secrets.APPSTORE_KEY_ID }}
+          APPSTORE_PRIVATE_KEY: ${{ secrets.APPSTORE_PRIVATE_KEY }}
+        working-directory: ios/App
+        run: |
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+
+          xcodebuild -project App.xcodeproj \
+            -scheme App \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath $RUNNER_TEMP/App.xcarchive \
+            archive
+
+          cat <<EOF > $RUNNER_TEMP/ExportOptions.plist
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store-connect</string>
+            <key>destination</key>
+            <string>export</string>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/App.xcarchive \
+            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
+            -exportPath $RUNNER_TEMP/export
+
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$APPSTORE_PRIVATE_KEY" > ~/.appstoreconnect/private_keys/AuthKey_${APPSTORE_KEY_ID}.p8
+
+          xcrun altool --upload-app \
+            --type ios \
+            --file $RUNNER_TEMP/export/*.ipa \
+            --apiKey "$APPSTORE_KEY_ID" \
+            --apiIssuer "$APPSTORE_ISSUER_ID"

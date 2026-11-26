@@ -1,0 +1,2702 @@
+:root {
+  --parchment-bg: linear-gradient(180deg, #fffaf0 0%, #f3e4c5 100%);
+  --wood-dark: #231710;
+  --forest-deep: #18281f;
+  --gold-warm: #e8b84b;
+  --emerald-accent: #27794e;
+  --text-ink: #1e140c;
+  --text-muted: #463222;
+  --safe-top: env(safe-area-inset-top, 10px);
+  --safe-bottom: env(safe-area-inset-bottom, 10px);
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #16221b;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  color: var(--text-ink);
+  touch-action: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-shell {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.phaser-viewport {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.phaser-viewport canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* =========================================================
+   TOP PICTORIAL MEDALLION HUD (Zero Clutter)
+   ========================================================= */
+.hud-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: calc(var(--safe-top) + 6px) 10px 6px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.hud-status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.portrait-hud-btn {
+  pointer-events: auto;
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.hud-avatar-lg {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.55));
+}
+
+.day-orb {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #2d1e12 0%, #191009 100%);
+  border: 1.8px solid #eec673;
+  color: #fff2be;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 1px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45);
+}
+
+.quest-pictorial-pill {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(180deg, rgba(34, 24, 16, 0.93) 0%, rgba(21, 15, 10, 0.95) 100%);
+  border: 2px solid #dfa952;
+  border-radius: 999px;
+  padding: 4px 10px 4px 5px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.45);
+}
+
+.quest-pictorial-pill.ready {
+  border-color: #6df0a5;
+  box-shadow: 0 0 16px rgba(109, 240, 165, 0.45);
+}
+
+.qp-avatar {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.qp-scroll {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.qp-item {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.qp-count {
+  color: #fff4cb;
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.qp-check {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.hud-right-Cluster {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.gold-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(180deg, rgba(35, 24, 15, 0.95) 0%, rgba(20, 13, 8, 0.96) 100%);
+  border: 2px solid #ecc26c;
+  color: #fff2be;
+  border-radius: 999px;
+  padding: 6px 12px 6px 7px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.42);
+}
+
+.hud-mini-icon {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.graphic-icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sound-medallion-btn img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.48));
+}
+
+/* =========================================================
+   TOAST STACK
+   ========================================================= */
+.toast-stack {
+  position: absolute;
+  top: calc(var(--safe-top) + 74px);
+  left: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  pointer-events: none;
+  z-index: 35;
+}
+
+.toast-pill {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: rgba(20, 31, 24, 0.95);
+  color: #fff9e8;
+  border: 2px solid #f5d27a;
+  border-radius: 999px;
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.44);
+  animation: toastIn 0.24s ease-out;
+}
+
+.toast-pill img {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================================
+   PURE GRAPHIC MEDALLION BOTTOM NAVIGATION DOCK (No Text!)
+   ========================================================= */
+.hud-bottom-dock {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 6px 10px calc(var(--safe-bottom) + 6px);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(14, 20, 16, 0) 0%, rgba(14, 20, 16, 0.88) 48%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.medallion-dock-btn {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: transform 0.16s cubic-bezier(0.2, 0.9, 0.3, 1.2), filter 0.16s ease;
+}
+
+.medallion-dock-btn img {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.55));
+}
+
+.medallion-dock-btn:active {
+  transform: scale(0.92);
+}
+
+.medallion-dock-btn.active {
+  transform: translateY(-6px) scale(1.09);
+}
+
+.medallion-dock-btn.active img {
+  filter: drop-shadow(0 0 12px rgba(255, 222, 122, 0.92)) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
+}
+
+.open-gem-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #b8ffd6 0%, #27b868 65%, #146338 100%);
+  border: 2px solid #fff5c8;
+  box-shadow: 0 0 10px rgba(68, 240, 145, 0.85);
+}
+
+/* =========================================================
+   MODALS, WAX-SEAL CLOSE BUTTONS, & GRAPHIC CONTROLS
+   ========================================================= */
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 18, 14, 0.74);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 50;
+  touch-action: pan-y;
+}
+
+.parchment-panel {
+  background: var(--parchment-bg);
+  border-top: 3px solid #d1a04f;
+  box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.52);
+}
+
+.modal-sheet {
+  width: 100%;
+  max-width: 540px;
+  max-height: 88vh;
+  overflow-y: auto;
+  border-radius: 26px 26px 0 0;
+  padding: 18px 16px calc(var(--safe-bottom) + 20px);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.modal-title-with-emblem {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.header-station-emblem {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
+}
+
+.eyebrow-tag {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #704618;
+  margin-bottom: 2px;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: 22px;
+  color: #1e130b;
+}
+
+/* Crimson Wax-Seal X Graphic Button */
+.wax-close-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.14s ease;
+}
+
+.wax-close-btn img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.32));
+}
+
+.wax-close-btn:active {
+  transform: scale(0.9);
+}
+
+/* Pictorial Recipe / Formula Strip */
+.recipe-strip {
+  display: flex;
+  gap: 9px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 6px;
+  margin-bottom: 14px;
+}
+
+.recipe-strip::-webkit-scrollbar {
+  display: none;
+}
+
+.recipe-chip.pictorial {
+  flex: 0 0 auto;
+  width: 76px;
+  padding: 8px 6px;
+  border-radius: 18px;
+  background: #fffcf5;
+  border: 2.5px solid #d4b684;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.recipe-chip.pictorial img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+
+.recipe-chip.pictorial.active {
+  border-color: #25734b;
+  background: #e5f6eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 115, 75, 0.2);
+}
+
+.chip-badge {
+  font-size: 13px;
+  font-weight: 800;
+  color: #3d2b19;
+}
+
+/* Prep Conversion Stage */
+.conversion-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  background: #fffdf8;
+  border: 2px solid #d8be90;
+  border-radius: 18px;
+  padding: 12px;
+  margin-bottom: 14px;
+}
+
+.item-card-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.item-card-mini img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.mini-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #1f140b;
+  margin-top: 4px;
+}
+
+.mini-stock {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #4a3523;
+}
+
+.arrow-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.conv-emblem {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.arrow-glyph {
+  font-size: 20px;
+  color: #7c511e;
+}
+
+/* Tactile Graphic Medallion Action Buttons */
+.graphic-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.graphic-work-medallion {
+  flex: 1;
+  border: 2.5px solid #c99746;
+  border-radius: 24px;
+  padding: 14px 16px;
+  background: radial-gradient(circle at center, #fffdf6 0%, #ead6b0 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(45, 29, 12, 0.22);
+  transition: transform 0.12s ease;
+}
+
+.graphic-work-medallion.wide {
+  width: 100%;
+}
+
+.graphic-work-medallion.simmering {
+  border-color: #2c8456;
+  background: radial-gradient(circle at center, #ffffff 0%, #dff4e7 100%);
+}
+
+.graphic-work-medallion.disabled,
+.graphic-work-medallion:disabled {
+  opacity: 0.45;
+  filter: grayscale(0.7);
+  cursor: not-allowed;
+}
+
+.graphic-work-medallion.pop,
+.graphic-work-medallion:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.gwm-icons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gwm-main {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.28));
+}
+
+.gwm-sub {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  margin-left: -14px;
+  margin-top: 28px;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+}
+
+.stir-orb-ring {
+  padding: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--brew-color, #67db9a) 0%, transparent 72%);
+}
+
+.graphic-batch-medallion {
+  position: relative;
+  width: 92px;
+  height: 112px;
+  border-radius: 22px;
+  border: 2.5px solid #b98a42;
+  background: linear-gradient(180deg, #fffaf0 0%, #e7d1a7 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: 0 5px 12px rgba(45, 29, 12, 0.18);
+}
+
+.graphic-batch-medallion img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.batch-mult {
+  font-size: 16px;
+  font-weight: 900;
+  color: #245c3c;
+}
+
+.step-dots {
+  display: flex;
+  gap: 9px;
+}
+
+.step-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #d5cbb8;
+  border: 2px solid #6b5335;
+}
+
+.step-dot.filled {
+  background: #28945d;
+  border-color: #185c39;
+  transform: scale(1.16);
+}
+
+/* Craft Detail Card */
+.craft-detail-card {
+  background: #fffdf7;
+  border: 2px solid #d8be90;
+  border-radius: 20px;
+  padding: 14px;
+}
+
+.craft-hero-row {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.craft-hero-icon {
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.craft-hero-info h3 {
+  margin: 0 0 4px;
+  font-family: Georgia, serif;
+  font-size: 20px;
+  color: #1d130b;
+}
+
+.craft-hero-info p {
+  margin: 0 0 8px;
+  font-size: 14.5px;
+  line-height: 1.4;
+  color: #3f2c1c;
+}
+
+.value-pill-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.gold-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fef0c2;
+  border: 1.5px solid #cf9d32;
+  color: #593c06;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.inline-coin-xs {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.stock-tag {
+  background: #e3efe7;
+  color: #1e4630;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 800;
+}
+
+.ingredient-req-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.ing-req-pill {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  background: #f8f0e0;
+  border: 2px solid #d8be90;
+}
+
+.ing-req-pill.ok {
+  background: #e8f7ed;
+  border-color: #74c291;
+}
+
+.ing-req-pill img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.ing-req-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ing-req-text strong {
+  font-size: 15px;
+  color: #1f140b;
+}
+
+.ing-req-text span {
+  font-size: 13px;
+  color: #4a3523;
+}
+
+.ing-check-icon {
+  width: 28px !important;
+  height: 28px !important;
+  object-fit: contain;
+}
+
+.ing-check {
+  font-weight: 800;
+  font-size: 14.5px;
+  color: #6b4623;
+}
+
+/* Prosperity & Shop Shelves */
+.prosperity-card {
+  background: #edf7f0;
+  border: 2px solid #7ec298;
+  border-radius: 16px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+}
+
+.prosperity-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #19472c;
+  margin-bottom: 6px;
+}
+
+.prosperity-bar-bg {
+  height: 10px;
+  background: #cde4d5;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.prosperity-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2d8a56 0%, #e5aa34 100%);
+  border-radius: 999px;
+  transition: width 0.35s ease;
+}
+
+.shop-open-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: #ebf6ee;
+  border: 2px solid #80bf97;
+  border-radius: 16px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.shop-open-banner strong {
+  display: block;
+  font-size: 15.5px;
+  color: #18422a;
+  margin-bottom: 2px;
+}
+
+.shop-open-banner span {
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: #2f523e;
+}
+
+.graphic-door-toggle {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.gdt-main {
+  width: 62px;
+  height: 62px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.graphic-door-toggle.open .gdt-main {
+  filter: drop-shadow(0 0 12px rgba(80, 232, 146, 0.85));
+}
+
+.gdt-check {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.section-label {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #63401c;
+  margin: 14px 0 8px;
+}
+
+.shelf-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.shelf-slot-card {
+  position: relative;
+  background: #fffdf7;
+  border: 2.5px solid #d1b484;
+  border-radius: 18px;
+  padding: 10px 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 122px;
+  cursor: pointer;
+}
+
+.shelf-slot-card.selected {
+  border-color: #26754c;
+  background: #e7f6ed;
+}
+
+.slot-num {
+  font-size: 12px;
+  font-weight: 800;
+  color: #6b4e30;
+}
+
+.slot-item-img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+}
+
+.slot-wax-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.slot-wax-remove img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.empty-shelf-placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-cubby-icon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  opacity: 0.35;
+}
+
+.sellable-list,
+.upgrades-list,
+.trade-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sellable-pill,
+.upgrade-row,
+.trade-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: #fffdf8;
+  border: 2px solid #d6ba8c;
+  border-radius: 16px;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.sellable-pill {
+  cursor: pointer;
+  width: 100%;
+}
+
+.sellable-pill > img,
+.upgrade-row > img,
+.trade-row > img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sellable-pill div:first-of-type,
+.upgrade-info,
+.trade-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sellable-pill strong,
+.upgrade-info strong,
+.trade-info strong {
+  font-size: 15px;
+  color: #1e130b;
+}
+
+.sellable-pill span,
+.upgrade-info span,
+.trade-info span {
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: #463220;
+}
+
+/* Graphic Coin CTA Pill */
+.graphic-coin-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: linear-gradient(180deg, #3b2919 0%, #24180d 100%);
+  border: 2px solid #e7be68;
+  color: #fff2be;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.graphic-coin-cta img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.graphic-coin-cta:disabled:not(.owned) {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.graphic-coin-cta.owned {
+  background: none;
+  border: none;
+  padding: 2px;
+}
+
+.owned-check-lg {
+  width: 38px !important;
+  height: 38px !important;
+}
+
+.pricing-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pricing-pill.graphic {
+  background: #f8eedb;
+  border: 2.5px solid #d1b382;
+  border-radius: 16px;
+  padding: 9px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.pricing-pill.graphic img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+}
+
+.pricing-pill.graphic.active {
+  background: #e5f6eb;
+  border-color: #26754c;
+}
+
+.pricing-pill.graphic strong {
+  font-size: 14px;
+  color: #1f140b;
+}
+
+/* Villager Modal */
+.villager-header-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.villager-portrait-lg {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
+}
+
+.villager-title-col {
+  flex: 1;
+}
+
+.villager-title-col h2 {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: 23px;
+}
+
+.hearts-row {
+  display: flex;
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.heart-icon-sm {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.heart-icon-sm.off {
+  filter: grayscale(1);
+  opacity: 0.3;
+}
+
+.villager-dialogue {
+  margin: 0 0 14px;
+  padding: 13px 15px;
+  background: #fffdf8;
+  border-left: 4px solid #cb9338;
+  border-radius: 13px;
+  font-family: Georgia, serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #21160d;
+}
+
+.quest-offer-card {
+  background: #ebf6ef;
+  border: 2px solid #7bc096;
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.quest-offer-card h3 {
+  margin: 2px 0 6px;
+  font-family: Georgia, serif;
+  font-size: 19px;
+}
+
+.quest-offer-card p {
+  margin: 0 0 11px;
+  font-size: 14.5px;
+  line-height: 1.4;
+  color: #294434;
+}
+
+.quest-req-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.quest-req-row > img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.quest-req-row > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 14.5px;
+}
+
+.quest-reward-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 800;
+  color: #6b4608;
+}
+
+.graphic-quest-action-btn {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.graphic-quest-action-btn > img:first-child {
+  width: 66px;
+  height: 66px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+}
+
+.graphic-quest-action-btn.ready > img:first-child {
+  filter: drop-shadow(0 0 12px rgba(78, 232, 146, 0.9));
+}
+
+.gqa-sub {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 28px !important;
+  height: 28px !important;
+  object-fit: contain;
+}
+
+/* Compendium Graphic Tabs */
+.graphic-tab-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.graphic-tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px;
+  border-radius: 16px;
+  border: 2.5px solid #cbb082;
+  background: #f7ead2;
+  cursor: pointer;
+}
+
+.graphic-tab-btn img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.graphic-tab-btn.active {
+  background: #e3f5ea;
+  border-color: #257049;
+}
+
+.gtb-count {
+  font-size: 15px;
+  font-weight: 800;
+  color: #21160c;
+}
+
+.journal-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.journal-quest-card {
+  background: #fffdf8;
+  border: 2px solid #d5b98b;
+  border-radius: 16px;
+  padding: 13px;
+}
+
+.jq-top {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 7px;
+}
+
+.jq-top img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.jq-top div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.jq-top strong {
+  font-size: 16px;
+}
+
+.jq-top span {
+  font-size: 13.5px;
+  color: #4a3522;
+}
+
+.journal-quest-card p {
+  margin: 0 0 9px;
+  font-size: 14.5px;
+  line-height: 1.4;
+}
+
+.jq-progress {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+}
+
+.jq-progress > img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.journal-stats-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #493422;
+}
+
+.graphic-sleep-medallion {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.graphic-sleep-medallion img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.28));
+}
+
+.satchel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 9px;
+}
+
+.satchel-cell {
+  background: #fffdf8;
+  border: 2px solid #d6ba8c;
+  border-radius: 16px;
+  padding: 11px 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.satchel-cell img {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.satchel-cell strong {
+  font-size: 13.5px;
+  line-height: 1.25;
+  color: #1f140b;
+}
+
+.qty-pill {
+  font-size: 14px;
+  font-weight: 800;
+  color: #1f6640;
+}
+
+.recipe-book-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fffdf8;
+  border: 2px solid #d6ba8c;
+  border-radius: 16px;
+  padding: 12px;
+}
+
+.recipe-book-row > img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+}
+
+.recipe-book-row strong {
+  font-size: 16px;
+}
+
+.recipe-book-row p {
+  margin: 3px 0 6px;
+  font-size: 14px;
+  line-height: 1.38;
+  color: #432f1e;
+}
+
+.recipe-ing-icons {
+  display: flex;
+  gap: 6px;
+}
+
+.recipe-ing-icons img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.empty-hint-box {
+  background: #f6ebd6;
+  border: 2px dashed #bd9454;
+  border-radius: 15px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: center;
+  font-size: 14.5px;
+  line-height: 1.4;
+  color: #3d2b1a;
+}
+
+.empty-hint-box.compact {
+  padding: 11px;
+}
+
+/* Care Application Fullscreen */
+.care-fullscreen {
+  align-items: stretch;
+}
+
+.care-sheet {
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  background-size: cover;
+  background-position: center;
+  padding: calc(var(--safe-top) + 14px) 16px calc(var(--safe-bottom) + 24px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  color: #fff8e8;
+}
+
+.care-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.villager-care-badge {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.villager-care-badge img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
+}
+
+.villager-care-badge h2 {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-size: 22px;
+  color: #fff8e6;
+}
+
+.care-instruction {
+  background: rgba(20, 32, 24, 0.92);
+  border: 2px solid #ecc676;
+  border-radius: 16px;
+  padding: 12px 15px;
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.care-workbench-card {
+  background: rgba(254, 248, 234, 0.96);
+  color: var(--text-ink);
+  border-radius: 24px;
+  padding: 18px 16px;
+  border: 2.5px solid #dca955;
+}
+
+.limb-silhouette {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.limb-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #463220;
+  text-align: center;
+}
+
+.care-spots-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.soot-spot-btn.graphic {
+  border: 2.5px dashed #b2673a;
+  background: #f8e7d5;
+  border-radius: 20px;
+  padding: 16px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.soot-spot-btn.graphic.cleaned {
+  border-style: solid;
+  border-color: #2f965d;
+  background: #e3f7eb;
+}
+
+.care-spot-img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+}
+
+.balm-track {
+  width: 100%;
+  background: rgba(45, 95, 65, 0.18);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.balm-fill-bar {
+  height: 13px;
+  border-radius: 999px;
+  transition: width 0.25s ease;
+}
+
+.wrapped-success-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+
+.wrapped-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #e5f6eb;
+  border: 2px solid #63bd88;
+  border-radius: 16px;
+  padding: 13px;
+  width: 100%;
+}
+
+.wrapped-success-banner img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+}
+
+.wrapped-success-banner h3 {
+  margin: 0 0 4px;
+  font-size: 17.5px;
+}
+
+.wrapped-success-banner p {
+  margin: 0;
+  font-size: 14.5px;
+}
+
+.graphic-coin-cta.large-reward {
+  padding: 11px 24px;
+  font-size: 18px;
+}
+
+.graphic-coin-cta.large-reward img {
+  width: 32px;
+  height: 32px;
+}
+
+/* Welcome Screen */
+.welcome-screen {
+  align-items: center;
+  padding: 16px;
+}
+
+.welcome-card {
+  width: 100%;
+  max-width: 430px;
+  max-height: 92vh;
+  overflow-y: auto;
+  border-radius: 28px;
+  border: 3px solid #d4a14d;
+  padding: 20px 18px;
+  text-align: center;
+}
+
+.welcome-hero-stack {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.welcome-hero-img {
+  width: 196px;
+  height: 196px;
+  object-fit: cover;
+  border-radius: 26px;
+  border: 3px solid #d6a451;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+}
+
+.welcome-avatar-badge {
+  position: absolute;
+  right: -16px;
+  bottom: -10px;
+  width: 74px;
+  height: 74px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.38));
+}
+
+.welcome-card h1 {
+  margin: 2px 0 8px;
+  font-family: Georgia, serif;
+  font-size: 26px;
+  color: #1e130b;
+}
+
+.welcome-letter {
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 1.48;
+  color: #372617;
+}
+
+.welcome-icon-trio {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.wi-cell img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.24));
+}
+
+.ios-pwa-tip {
+  background: #e6f5eb;
+  border: 2px solid #75bd92;
+  border-radius: 14px;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  line-height: 1.38;
+  color: #19452b;
+  margin-bottom: 12px;
+}
+
+.welcome-enter-wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.graphic-enter-seal-btn {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  animation: gentlePulse 2.2s ease-in-out infinite;
+}
+
+.enter-main-medallion {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 16px rgba(248, 206, 102, 0.75)) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.38));
+}
+
+.enter-sub-boot {
+  position: absolute;
+  bottom: 0;
+  right: -6px;
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+}
+
+@keyframes gentlePulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+/* =========================================================
+   STARLIGHT RUNES MONETIZATION & SANDBOX CHECKOUT UI
+   ========================================================= */
+.rune-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(180deg, #2d1b46 0%, #190e29 100%);
+  border: 2px solid #b88cf8;
+  color: #f4ebff;
+  border-radius: 999px;
+  padding: 6px 11px 6px 7px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(34, 15, 62, 0.52);
+}
+
+.rune-plus-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #54dec7 0%, #249c89 100%);
+  color: #0b2621;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.graphic-rune-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: linear-gradient(180deg, #3c2260 0%, #24123c 100%);
+  border: 2px solid #c39bff;
+  color: #f7efff;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(42, 18, 75, 0.28);
+}
+
+.graphic-rune-cta.lg {
+  padding: 10px 20px;
+  font-size: 16.5px;
+}
+
+.graphic-rune-cta img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.cta-mini-item {
+  width: 26px !important;
+  height: 26px !important;
+  margin-left: 3px;
+}
+
+.upgrade-cta-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.empty-rune-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.rune-unlock-formula-box {
+  background: linear-gradient(180deg, #f5effe 0%, #eadcf9 100%);
+  border: 2px solid #b58ef2;
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2f1b4d;
+}
+
+.graphic-rune-finish-medallion {
+  width: 96px;
+  height: 112px;
+  border-radius: 22px;
+  border: 2.5px solid #b98ef5;
+  background: radial-gradient(circle at center, #3f2466 0%, #22113a 100%);
+  color: #f7eeff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px rgba(45, 18, 82, 0.36);
+}
+
+.grfm-rune {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(176, 132, 255, 0.75));
+}
+
+.graphic-rune-finish-medallion strong {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.rune-bloom-banner {
+  background: #f3ecfe;
+  border-color: #b58ef2;
+}
+
+/* Rune Emporium Digital Storefront */
+.rune-emporium-sheet {
+  position: relative;
+  background: linear-gradient(180deg, #fdf8ff 0%, #eee2fa 100%);
+  border-top: 3px solid #b68bf5;
+  box-shadow: 0 -10px 35px rgba(18, 8, 34, 0.62);
+}
+
+.rune-eyebrow {
+  color: #5b2e94;
+}
+
+.rune-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rune-balance-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #2b1744;
+  border: 2px solid #c39bff;
+  color: #fff6ff;
+  border-radius: 999px;
+  padding: 5px 12px 5px 7px;
+  font-size: 15.5px;
+  font-weight: 800;
+}
+
+.rune-balance-chip img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.rune-tab-bar {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.graphic-tab-btn.rune-tab {
+  background: #f2e8fc;
+  border-color: #c2a3ef;
+}
+
+.graphic-tab-btn.rune-tab.active {
+  background: #361d56;
+  border-color: #d6b8ff;
+}
+
+.graphic-tab-btn.rune-tab.active .gtb-count {
+  color: #fff8ff;
+}
+
+.rune-pack-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.rune-pack-card {
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #f5ecfe 100%);
+  border: 2.5px solid var(--pack-accent, #b58ef2);
+  border-radius: 20px;
+  padding: 16px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 5px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(42, 18, 72, 0.14);
+  transition: transform 0.14s ease;
+}
+
+.rune-pack-card:active {
+  transform: scale(0.96);
+}
+
+.rune-pack-ribbon {
+  position: absolute;
+  top: -9px;
+  background: linear-gradient(90deg, #6b3fa0 0%, #2c8c82 100%);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.rune-pack-art {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 10px rgba(44, 18, 78, 0.24));
+}
+
+.rune-pack-title {
+  font-size: 14.5px;
+  color: #231238;
+}
+
+.rune-pack-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #391b5e;
+}
+
+.rune-pack-amount img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.rune-bonus-note {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #1f7a68;
+}
+
+.rune-price-seal {
+  margin-top: 4px;
+  width: 100%;
+  background: linear-gradient(180deg, #351d54 0%, #211038 100%);
+  border: 1.8px solid #cfaaff;
+  color: #fff5c8;
+  font-size: 15.5px;
+  font-weight: 900;
+  padding: 7px 10px;
+  border-radius: 13px;
+}
+
+/* Sandbox Testing Checkout Window */
+.checkout-window-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(12, 7, 22, 0.78);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  z-index: 90;
+}
+
+.checkout-window-card {
+  width: 100%;
+  max-width: 380px;
+  background: linear-gradient(180deg, #fffdf9 0%, #f3e8fc 100%);
+  border: 3px solid #c59eff;
+  border-radius: 26px;
+  padding: 18px 16px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.58);
+}
+
+.checkout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sandbox-test-pill {
+  background: #e1f8ef;
+  border: 1.8px solid #3ca882;
+  color: #12543d;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.wax-close-btn.sm img {
+  width: 38px;
+  height: 38px;
+}
+
+.checkout-summary-box {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: #ffffff;
+  border: 2px solid #d7c0f7;
+  border-radius: 18px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.checkout-pack-img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.checkout-summary-box h3 {
+  margin: 0 0 5px;
+  font-family: Georgia, serif;
+  font-size: 19px;
+  color: #211136;
+}
+
+.checkout-rune-grant {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 15px;
+  color: #462174;
+}
+
+.checkout-rune-grant img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.checkout-line-items {
+  background: #f8f2fe;
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.cli-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #211235;
+}
+
+.cli-row.muted {
+  font-size: 13px;
+  color: #553f70;
+}
+
+.checkout-disclaimer {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: #4c3963;
+  text-align: center;
+}
+
+.checkout-confirm-seal-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(180deg, #2d8f5e 0%, #1c613e 100%);
+  border: 2.5px solid #a8f5cb;
+  color: #ffffff;
+  border-radius: 18px;
+  padding: 12px 16px;
+  font-size: 17px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(28, 97, 62, 0.38);
+}
+
+.ccsb-check {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+/* =========================================================
+   TOUCH-MOTION GESTURE CRAFTING STAGES & 4-MENU DOCK (v7)
+   ========================================================= */
+.hud-bottom-dock.four-menu-dock {
+  justify-content: space-evenly;
+  padding: 6px 16px calc(var(--safe-bottom) + 8px);
+}
+
+.hud-bottom-dock.four-menu-dock .medallion-dock-btn img {
+  width: 68px;
+  height: 68px;
+}
+
+.gesture-stage-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.gesture-mortar-pad,
+.gesture-cauldron-pad {
+  position: relative;
+  width: 224px;
+  height: 224px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
+}
+
+.gesture-mortar-pad:active,
+.gesture-cauldron-pad:active {
+  cursor: grabbing;
+}
+
+.gesture-ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.gesture-ring-track {
+  fill: none;
+  stroke: rgba(112, 82, 42, 0.22);
+  stroke-width: 7;
+  stroke-dasharray: 8 6;
+}
+
+.gesture-ring-fill {
+  fill: none;
+  stroke: #2c965e;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.06s linear;
+}
+
+.mortar-bowl-bg,
+.cauldron-top-bg {
+  width: 184px;
+  height: 184px;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.28));
+}
+
+.cauldron-vortex-tint {
+  position: absolute;
+  width: 122px;
+  height: 122px;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.mortar-inner-herb,
+.mortar-inner-result {
+  position: absolute;
+  width: 66px;
+  height: 66px;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.mortar-pestle-sprite {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 6;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.36));
+}
+
+/* Cutting Board Swipe Stage */
+.gesture-cutting-board {
+  position: relative;
+  width: 100%;
+  height: 196px;
+  border-radius: 22px;
+  background: repeating-linear-gradient(
+      90deg,
+      #c69358 0px,
+      #c69358 26px,
+      #ba864b 26px,
+      #ba864b 28px
+    );
+  border: 3px solid #7d5326;
+  box-shadow: inset 0 0 24px rgba(58, 34, 12, 0.32), 0 6px 16px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.gesture-cutting-board.chop .board-herb-sprite {
+  transform: scale(0.92) rotate(-5deg);
+}
+
+.board-herb-sprite {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  pointer-events: none;
+  transition: transform 0.12s ease;
+  filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
+}
+
+.slice-guide-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 26px;
+  pointer-events: none;
+}
+
+.slice-cut-line {
+  width: 3px;
+  height: 112px;
+  border-left: 3px dashed rgba(255, 248, 214, 0.72);
+  transform: rotate(18deg);
+}
+
+.slice-cut-line.cut-done {
+  border-left: 4px solid #6ef5a9;
+  box-shadow: 0 0 10px rgba(110, 245, 169, 0.85);
+}
+
+.slice-slash-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Copper Alembic Bellows Stroke Stage */
+.gesture-alembic-pad {
+  position: relative;
+  width: 100%;
+  height: 184px;
+  border-radius: 22px;
+  background: radial-gradient(circle at 50% 80%, #fff0c4 0%, #ead2a4 65%, #d6b67c 100%);
+  border: 3px solid #b87b33;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  touch-action: none;
+  cursor: ns-resize;
+}
+
+.gesture-alembic-pad.stoking {
+  box-shadow: 0 0 22px rgba(255, 178, 62, 0.55);
+}
+
+.alembic-visual-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.alembic-side-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.alembic-coil-track {
+  flex: 1;
+  height: 18px;
+  background: rgba(94, 58, 22, 0.2);
+  border: 2px solid #9c6528;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.alembic-vapor-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b 0%, #fde047 60%, #6ee7b7 100%);
+  border-radius: 999px;
+  transition: width 0.08s linear;
+}
+
+/* Poultice Rub & Fold Stage */
+.gesture-poultice-cloth {
+  position: relative;
+  width: 100%;
+  height: 196px;
+  border-radius: 22px;
+  background: #f5ead4;
+  border: 3px solid #bfa070;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  cursor: grab;
+}
+
+.linen-weave-sheet {
+  position: relative;
+  width: 156px;
+  height: 136px;
+  border-radius: 16px;
+  background: repeating-linear-gradient(
+      45deg,
+      #fffaf0 0px,
+      #fffaf0 6px,
+      #f2e5cc 6px,
+      #f2e5cc 12px
+    );
+  border: 2px dashed #b29160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.linen-balm-layer {
+  position: absolute;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  filter: blur(8px);
+}
+
+.linen-flap.left-folded {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 52%;
+  background: rgba(246, 235, 212, 0.92);
+  border-right: 2px solid #b59462;
+}
+
+.poultice-stage-center-icon {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  z-index: 2;
+}
+
+.gesture-motion-badge {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  background: rgba(28, 19, 11, 0.88);
+  border: 1.5px solid #e6be6a;
+  color: #fff5d2;
+  font-size: 12.5px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 8;
+}
+
+/* Care Touch Rub Zones */
+.touch-rub-zone {
+  touch-action: none;
+}
+
+.mini-rub-bar {
+  width: 80%;
+  height: 6px;
+  background: rgba(88, 56, 28, 0.18);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.mini-rub-bar > div {
+  height: 100%;
+  background: #2b945c;
+}
+
+.care-rub-pad {
+  position: relative;
+  width: 100%;
+  min-height: 175px;
+  border: 2.5px solid #2c8054;
+  background: #edf8f0;
+  border-radius: 22px;
+  padding: 18px 14px 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  touch-action: none;
+  cursor: grab;
+}
+
+/* Subtle Optional Rune Pills & Main Menu */
+.graphic-rune-cta.subtle {
+  font-size: 13px;
+  padding: 5px 11px;
+  opacity: 0.92;
+}
+
+.rune-optional-note {
+  margin: 0 0 12px;
+  padding: 9px 12px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1.5px solid #cbb2ee;
+  border-radius: 13px;
+  font-size: 13px;
+  line-height: 1.38;
+  color: #3a2358;
+}
+
+.recipe-ing-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #f5ebd7;
+  border: 1.5px solid #d1b586;
+  border-radius: 999px;
+  padding: 2px 8px 2px 4px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #4d351e;
+}
+
+.recipe-ing-tag.ok {
+  background: #e5f6ec;
+  border-color: #6cc290;
+  color: #1c5e3a;
+}
+
+.menu-save-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: #fffdf8;
+  border: 2px solid #d6ba8c;
+  border-radius: 18px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.menu-cover-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 2px solid #cfa050;
+  flex-shrink: 0;
+}
+
+.menu-save-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13.5px;
+  color: #463220;
+}
+
+.menu-save-meta strong {
+  font-size: 16px;
+  color: #1e130b;
+}
+
+.menu-world-guide {
+  background: #ecf6ef;
+  border: 2px solid #82c299;
+  border-radius: 16px;
+  padding: 11px 13px;
+  margin-bottom: 12px;
+}
+
+.menu-world-guide p {
+  margin: 3px 0 0;
+  font-size: 13.5px;
+  line-height: 1.42;
+  color: #234531;
+}
+
+.menu-controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.menu-footer-actions {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.menu-reset-link {
+  background: none;
+  border: none;
+  color: #7c5227;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px 10px;
+}
+
+.menu-reset-confirm {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   FRONTIER EXPEDITION VITALITY & POTION WARD BAR (v8)
+   ========================================================= */
+.frontier-vitality-bar {
+  pointer-events: auto;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: linear-gradient(180deg, rgba(22, 32, 28, 0.94) 0%, rgba(13, 20, 17, 0.96) 100%);
+  border: 2px solid #dfa952;
+  border-radius: 18px;
+  padding: 6px 10px 6px 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.48);
+}
+
+.fvb-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.fvb-zone-title {
+  color: #fff3c4;
+  font-family: Georgia, serif;
+  font-size: 14px;
+}
+
+.fvb-hearts {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fvb-heart {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.fvb-heart.off {
+  filter: grayscale(1);
+  opacity: 0.28;
+}
+
+.ward-shield-tag {
+  margin-left: 6px;
+  background: rgba(253, 224, 71, 0.2);
+  border: 1.5px solid #fde047;
+  color: #fef08a;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+
+.quick-sip-medallion {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid #ecc673;
+  background: radial-gradient(circle, #382515 0%, #1c1209 100%);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.quick-sip-medallion img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+
+
+
+/* =========================================================
+   HERBALIST FORAGING TOOLS & INNER SANCTUM BADGES (v12)
+   ========================================================= */
+.fvb-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.fvb-tool-badges {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.fvb-tool-badges img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+.tool-gear-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tool-gear-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: rgba(45, 31, 18, 0.08);
+  border: 1.5px solid rgba(139, 98, 48, 0.35);
+}
+
+.tool-gear-chip.equipped {
+  background: linear-gradient(180deg, rgba(254, 243, 199, 0.92) 0%, rgba(253, 230, 138, 0.68) 100%);
+  border-color: #d97706;
+  box-shadow: 0 3px 8px rgba(180, 83, 9, 0.16);
+}
+
+.tool-gear-chip.unowned {
+  cursor: pointer;
+  opacity: 0.72;
+}
+
+.tool-gear-chip.unowned img {
+  filter: grayscale(0.75);
+}
+
+.tool-gear-chip img {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.tool-gear-chip strong {
+  display: block;
+  font-size: 13px;
+  color: #24160b;
+}
+
+.tool-gear-chip small {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #784818;
+}
